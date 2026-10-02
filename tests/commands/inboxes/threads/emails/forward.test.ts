@@ -92,6 +92,58 @@ describe('inboxes threads emails forward command', () => {
     expect(args.text).toBe('FYI');
   });
 
+  it('passes repeated --cc and --bcc to the SDK', async () => {
+    setupOutputSpies();
+
+    await forwardInboxThreadEmailCommand.parseAsync(
+      [
+        '--inbox_id',
+        INBOX_ID,
+        '--thread_id',
+        THREAD_ID,
+        '--email_id',
+        EMAIL_ID,
+        '--to',
+        'a@example.com',
+        '--cc',
+        'c@example.com',
+        '--cc',
+        'e@example.com',
+        '--bcc',
+        'd@example.com',
+        '--bcc',
+        'f@example.com',
+      ],
+      { from: 'user' },
+    );
+
+    const args = mockForward.mock.calls[0][0] as Record<string, unknown>;
+    expect(args.cc).toEqual(['c@example.com', 'e@example.com']);
+    expect(args.bcc).toEqual(['d@example.com', 'f@example.com']);
+  });
+
+  it('omits cc and bcc when the flags are absent', async () => {
+    setupOutputSpies();
+
+    await forwardInboxThreadEmailCommand.parseAsync(
+      [
+        '--inbox_id',
+        INBOX_ID,
+        '--thread_id',
+        THREAD_ID,
+        '--email_id',
+        EMAIL_ID,
+        '--to',
+        'a@example.com',
+      ],
+      { from: 'user' },
+    );
+
+    const args = mockForward.mock.calls[0][0] as Record<string, unknown>;
+    expect(args).not.toHaveProperty('cc');
+    expect(args).not.toHaveProperty('bcc');
+  });
+
   it('errors with missing_to when no recipient is given', async () => {
     setNonInteractive();
     errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

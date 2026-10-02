@@ -10,11 +10,11 @@ export const getInboxThreadEmailCommand = new Command('get')
   .description('Retrieve a single email from a thread')
   .option('--inbox_id <id>', 'Inbox UUID')
   .option('--thread_id <id>', 'Thread UUID')
-  .option('--email_id <id>', 'Email UUID (from "threads get")')
+  .option('--email_id <id>', 'Email UUID (from "threads emails list")')
   .addHelpText(
     'after',
     buildHelpText({
-      output: `  {"id":"<uuid>","direction":"inbound|outbound","from":"<sender>","to":[],"cc":[],"bcc":[],"reply_to":[],"subject":"<subject>|null","message_id":"<message-id>|null","html":"<html>|null","text":"<text>|null","attachments":[{"id":"<id>","filename":"<name>|null","size":123}],"read":true,"received_at":"<date>"}`,
+      output: `  {"id":"<uuid>","direction":"inbound|outbound","from":"<sender>","to":[],"cc":[],"bcc":[],"reply_to":[],"subject":"<subject>|null","message_id":"<message-id>|null","html":"<html>|null","text":"<text>|null","attachments":[{"id":"<id>","filename":"<name>|null","size":123|null}],"read":true,"received_at":"<date>"}`,
       errorCodes: ['auth_error', 'missing_id', 'fetch_error'],
       examples: [
         'resend inboxes threads emails get --inbox_id <inbox_id> --thread_id <thread_id> --email_id <email_id>',
@@ -32,7 +32,7 @@ export const getInboxThreadEmailCommand = new Command('get')
     );
     const emailId = await requireText(
       opts.email_id,
-      { message: 'Email ID', placeholder: 'from "threads get"' },
+      { message: 'Email ID', placeholder: 'from "threads emails list"' },
       { message: 'Missing --email_id flag.', code: 'missing_id' },
       globalOpts,
     );

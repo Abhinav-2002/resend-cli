@@ -425,8 +425,10 @@ For example, you can:
 | Category | Events                                                                                                                                                                                                   |
 | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Email    | `email.sent`, `email.delivered`, `email.delivery_delayed`, `email.bounced`, `email.complained`, `email.opened`, `email.clicked`, `email.failed`, `email.scheduled`, `email.suppressed`, `email.received` |
-| Contact  | `contact.created`, `contact.updated`, `contact.deleted`                                                                                                                                                  |
+| Contact  | `contact.created`, `contact.updated`, `contact.deleted`, `contact.topics.updated`                                                                                                                        |
 | Domain   | `domain.created`, `domain.updated`, `domain.deleted`                                                                                                                                                     |
+| Topic    | `topic.created`, `topic.updated`, `topic.deleted`                                                                                                                                                        |
+| Inbox    | `inbox.created`, `inbox.updated`, `inbox.deleted`, `inbox.thread.created`, `inbox.email.received`, `inbox.email.sent`, `inbox.thread.folder.updated`, `inbox.thread.assigned`, `inbox.thread.unassigned`, `inbox.thread.labels.updated`, `inbox.draft.created`, `inbox.draft.updated`, `inbox.draft.sent`, `inbox.draft.deleted` (beta) |
 
 Use `all` with `--events` to subscribe to every event.
 
