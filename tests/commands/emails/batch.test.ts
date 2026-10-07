@@ -503,16 +503,17 @@ describe('batch command', () => {
     logSpy.mockRestore();
   });
 
-  it('--dry-run with an empty array errors with invalid_format', async () => {
+  it('errors with invalid_format on an empty array without calling the API', async () => {
     setNonInteractive();
     errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     exitSpy = mockExitThrow();
 
     const file = await writeTmpJson([]);
     await expectExit1(() =>
-      batchCommand.parseAsync(['--file', file, '--dry-run'], { from: 'user' })
+      batchCommand.parseAsync(['--file', file], { from: 'user' }),
     );
 
+    expect(mockBatchSend).not.toHaveBeenCalled();
     const output = errorSpy.mock.calls.map((c) => c[0]).join(' ');
     expect(output).toContain('invalid_format');
     expect(output).toContain('Batch cannot be empty');

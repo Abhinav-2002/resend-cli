@@ -97,6 +97,16 @@ export const batchCommand = new Command('batch')
 
     const emails = parsed as unknown[];
 
+    if (emails.length === 0) {
+      outputError(
+        {
+          message: 'Batch cannot be empty. Provide at least one email object.',
+          code: 'invalid_format',
+        },
+        { json: globalOpts.json },
+      );
+    }
+
     if (emails.length > 100) {
       console.warn(
         `Warning: ${emails.length} emails exceeds the 100-email limit. The API may reject this request.`,
@@ -150,37 +160,8 @@ export const batchCommand = new Command('batch')
     }
 
     if (opts.dryRun) {
-      if (emails.length === 0) {
-        outputError(
-          {
-            message: 'Batch cannot be empty. Provide at least one email object.',
-            code: 'invalid_format',
-          },
-          { json: globalOpts.json },
-        );
-      }
-
-      const requestPayload = emails.map((email) => {
-        const payload = email as Record<string, unknown>;
-        if (!payload.attachments || !Array.isArray(payload.attachments)) {
-          return payload;
-        }
-        const { attachments, ...rest } = payload;
-        return {
-          ...rest,
-          attachments: attachments.map((a: any) => {
-            if (typeof a !== 'object' || a === null) return a;
-            const { content, ...aRest } = a;
-            return {
-              ...aRest,
-              ...(content && { byteLength: Buffer.from(content).length }),
-            };
-          }),
-        };
-      });
-
       outputResult(
-        { dryRun: true, request: requestPayload },
+        { dryRun: true, request: emails },
         { json: globalOpts.json },
       );
       return;
